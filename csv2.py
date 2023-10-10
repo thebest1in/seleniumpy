@@ -56,8 +56,11 @@ def perform_login(email, password):
         browser.quit()
 
 # Create a CSV reader for input data
-with open('Classeur1.csv', 'r') as input_file:
+with open('Classeur1.csv', 'r') as input_file, open('results.csv', 'w', newline='') as output_file:
     csv_reader = csv.DictReader(input_file)
+    fieldnames = ['Num_cas_test', 'Result']  # Define the fieldnames for the result CSV
+    csv_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+    csv_writer.writeheader()  # Write the header row to the result CSV
     
     for row in csv_reader:
         num_cas_test = row['Num_cas_test']
@@ -66,8 +69,10 @@ with open('Classeur1.csv', 'r') as input_file:
         
         result = perform_login(email, password)
         
-        # Print "OK" or "KO" based on the result
+        # Print "OK" or "KO" based on the result and write it to the result CSV
         if result:
-            print(f"Test {num_cas_test}: 0")
+            print(f"Test {num_cas_test}: OK")
+            csv_writer.writerow({'Num_cas_test': num_cas_test, 'Result': 'OK'})
         else:
-            print(f"Test {num_cas_test}: 1")
+            print(f"Test {num_cas_test}: KO")
+            csv_writer.writerow({'Num_cas_test': num_cas_test, 'Result': 'KO'})
